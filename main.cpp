@@ -52,7 +52,6 @@ int main()
     cv::Mat target = cv::imread(targetname,1);
     cv::Mat source = cv::imread(sourcename,1);
 
-    // Perform the processing
     target=Xiao06(source,target);
 
     // Display and save the final image.
@@ -176,13 +175,12 @@ void MatchColumns(cv::Mat& U_s, cv::Mat& A_s, cv::Mat U_t, cv::Mat& A_t)
        MDotSum=cv::abs(U_s.col(c0).t()*U_t.col(0))+
                cv::abs(U_s.col(c1).t()*U_t.col(1))+
                cv::abs(U_s.col(c2).t()*U_t.col(2));
-       DotSum=MDotSum.at<double>(0,0);
+       DotSum=(float)MDotSum.at<double>(0,0);
        if(DotSum>maxval)
        {
            maxval=DotSum;
            bestperm=i;
         }
-
      }
      c0=perm[bestperm][0];
      c1=perm[bestperm][1];
@@ -191,17 +189,16 @@ void MatchColumns(cv::Mat& U_s, cv::Mat& A_s, cv::Mat U_t, cv::Mat& A_t)
      cv::Mat a_s=A_s.clone();
      cv::Mat u_s=U_s.clone();
 
-     MDotSum=U_s.col(c0).t()*U_t.col(0);
+     MDotSum=u_s.col(c0).t()*U_t.col(0);
      U_s.col(0)=u_s.col(c0)*copysign(1,MDotSum.at<double>(0,0));
-     MDotSum=U_s.col(c1).t()*U_t.col(1);
+     MDotSum=u_s.col(c1).t()*U_t.col(1);
      U_s.col(1)=u_s.col(c1)*copysign(1,MDotSum.at<double>(0,0));
-     MDotSum=U_s.col(c2).t()*U_t.col(2);
+     MDotSum=u_s.col(c2).t()*U_t.col(2);
      U_s.col(2)=u_s.col(c2)*copysign(1,MDotSum.at<double>(0,0));
 
      A_s.at<double>(0,0)=a_s.at<double>(c0,0);
      A_s.at<double>(1,0)=a_s.at<double>(c1,0);
      A_s.at<double>(2,0)=a_s.at<double>(c2,0);
-
   }
   // Compute the square root of A_ matrices.
   // (which is omitted from the original paper).
