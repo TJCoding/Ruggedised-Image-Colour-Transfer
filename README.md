@@ -19,3 +19,15 @@ The method is described further in the comments section of the function 'MatchCo
 
 ![Composite of Flower Image: Inputs and Outputs](Documents/Images/Composite.jpg?raw=true)
 
+#  
+#  
+
+The Xiao method has received particular attention because it is referenced in the survey of colour transfer methods by Faridul et al.  (https://www.researchgate.net/publication/262637346_A_Survey_of_Color_Mapping_and_its_Applications)  
+
+However an alternative method proposed by Pitie appears to offer reliable processing without any need for further ruggedisation and appears to offer comparable if not superior results to those achieved by the ‘Ruggedised Xiao’ method.  
+
+See https://github.com/frcs   
+And https://github.com/TJCoding/Pitie_Image_Colour_Transfer
+
+
+
