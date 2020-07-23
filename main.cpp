@@ -68,23 +68,25 @@ cv::Mat Xiao06(cv::Mat imgs,cv::Mat imgt)
     cv::Mat U_t, A_t, U_s, A_s, unused;
 	cv::Mat R_s = cv::Mat::eye(4, 4, CV_64FC1);
 	cv::Mat R_t = R_s.clone();
-    cv::Mat result;
+	cv::Mat result;
 	cv::Rect ROI(0, 0, 3, 3);
 
 	imgs.convertTo(imgs, CV_32FC3, 1/255.0);
 	imgt.convertTo(imgt, CV_32FC3, 1/255.0);
 
 	cv::calcCovarMatrix(imgs.reshape(1, imgs.cols * imgs.rows),
-                  cov, means, CV_COVAR_ROWS | CV_COVAR_NORMAL);
+                        cov, means, CV_COVAR_ROWS
+                        | CV_COVAR_NORMAL | CV_COVAR_SCALE);
     cv::Mat T_s=(cv::Mat_<double>(4,4)
                  << 1,0,0,   means.at<double>(0, 0),
                     0,1,0,   means.at<double>(0, 1),
                     0,0,1,   means.at<double>(0, 2),
                     0,0,0,                       1);
-	cv::SVD::compute(cov, A_s, U_s, unused);
+    cv::SVD::compute(cov, A_s, U_s, unused);
 
     cv::calcCovarMatrix(imgt.reshape(1, imgt.cols * imgt.rows),
-                  cov, means, CV_COVAR_ROWS | CV_COVAR_NORMAL);
+                        cov, means, CV_COVAR_ROWS
+                        | CV_COVAR_NORMAL | CV_COVAR_SCALE);
     cv::Mat T_t=(cv::Mat_<double>(4,4)
                  << 1,0,0,  -means.at<double>(0, 0),
                     0,1,0,  -means.at<double>(0, 1),
@@ -94,7 +96,8 @@ cv::Mat Xiao06(cv::Mat imgs,cv::Mat imgt)
 
     // Ruggedise (if flag set in 'Main') and also
     // compute the square root of the A_ matrices,
-    // (which is omitted from the original paper).
+    // (Note that computing the square root of A_s
+    //  does not appear in the original Xiao paper.)
 	MatchColumns(U_s, A_s, U_t, A_t);
 
 	U_s.copyTo(R_s(ROI));
@@ -117,7 +120,7 @@ cv::Mat Xiao06(cv::Mat imgs,cv::Mat imgt)
 	// the last operation.
 	cv::cvtColor(result,result,CV_BGRA2BGR);
 
-	result.convertTo(result, CV_8UC3, 255);
+    result.convertTo(result, CV_8UC3, 255);
 
 	return result;
 }
@@ -201,7 +204,6 @@ void MatchColumns(cv::Mat& U_s, cv::Mat& A_s, cv::Mat U_t, cv::Mat& A_t)
      A_s.at<double>(2,0)=a_s.at<double>(c2,0);
   }
   // Compute the square root of A_ matrices.
-  // (which is omitted from the original paper).
   cv::sqrt(A_s,A_s);
   cv::sqrt(A_t,A_t);
 }
